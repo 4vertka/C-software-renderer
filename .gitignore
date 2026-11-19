@@ -1,0 +1,4 @@
+build
+run.sh
+compile_commands.json
+build-release
