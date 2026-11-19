@@ -17,6 +17,9 @@ add_subdirectory(external/minifb)
 
 add_executable(${PROJECT_NAME}
   ./main/main.c
+  ./core/renderer.c
+  ./core/math/vector.c
+  ./core/math/matrix.c
 )
 
 

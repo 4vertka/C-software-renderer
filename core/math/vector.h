@@ -21,21 +21,18 @@ typedef struct {
   float w;
 } vec4f_t;
 
-float vec2_dot(vec2f_t a, vec2f_t b) {
-  return a.x*b.x + a.y*b.y;
-}
+//vec2 
+float vec2_dot(vec2f_t a, vec2f_t b);
 
-float vec3_dot(vec3f_t a, vec3f_t b) {
-  return a.x*b.x + a.y*b.y + a.z*b.z;
-}
+//vec3 
+float vec3_dot(vec3f_t a, vec3f_t b);
+vec3f_t vec3_cross(vec3f_t a, vec3f_t b);
+float vec3_length_squared(vec3f_t a);
+float vec3_length(vec3f_t a);
+vec3f_t vec3_unit(vec3f_t a);
+vec3f_t vec3_div_scalar(vec3f_t a, float scalar);
 
-float vec4_dot(vec4f_t a, vec4f_t b) {
-  return a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w;
-}
-
-vec3f_t vec2_cross(vec3f_t a, vec3f_t b) {
-  return (vec3f_t) {a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x};
-}
-
+//vec4
+float vec4_dot(vec4f_t a, vec4f_t b);
 
 #endif 
