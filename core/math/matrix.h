@@ -3,6 +3,7 @@
 
 #include "vector.h"
 #include <math.h>
+#include <string.h>
 
 #define M_PI 3.14159265358979323846
 
@@ -11,11 +12,11 @@ typedef struct {
 } mat4x4t_t;
 
 mat4x4t_t mat4_create(float diagonal) {
-  return (mat4x4t_t) {{
-    {1, 0, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, 1}
+ return (mat4x4t_t) {{
+    {diagonal, 0, 0, 0},
+    {0, diagonal, 0, 0},
+    {0, 0, diagonal, 0},
+    {0, 0, 0, diagonal}
   }};
 }
 
@@ -78,6 +79,17 @@ mat4x4t_t mat4_rotate(mat4x4t_t m, float angle, vec3f_t v) {
   }};
 
   return mat4_mul_mat4(m, rotate);
+}
+
+mat4x4t_t mat4_perspective(float fov, float a, float near, float far) {
+  float f = 1/tan(fov/2.0);
+
+  return (mat4x4t_t) {{
+    {f/a,   0, 0,                       0},
+    {0,     f, 0,                       0},
+    {0,     0, ((far+near)/(near-far)), ((2*far*near)/(near-far))},
+    {0,     0, -1,                      0},
+  }};
 }
 
 #endif 
