@@ -1,7 +1,9 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include <MiniFB.h>
+
+#include <math/vector.h>
+#include <math/matrix.h>
 
 static const int width = 800;
 static const int height = 600;
