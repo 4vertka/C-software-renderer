@@ -13,26 +13,17 @@
 #include <system/system.h>
 
 
-static const int width = 800;
-static const int height = 600;
-
-static framebuffer_t fb;
-
 vec3f_t p0 = {100, 100,0};            
 vec3f_t p1 = {100, 500, 0};           
 vec3f_t p2 = {500, 500, 0};           
 
-void draw(void) {
-  SDL_Rect draw_area;
-  
-  SDL_GetRenderViewport(fb.renderer, &draw_area);
+uint32_t color_to_uint(int r, int g, int b)
+{
+	return (uint32_t)((r << 16) + (g << 8) + (b << 0));
+}
 
-  SDL_SetRenderDrawColor(fb.renderer, 0, 0, 0, 0);
-  SDL_RenderClear(fb.renderer);
-  
-  plot_triangle(&fb, p0, p1, p2, (color_t){255,255,255,255});  
-
-  SDL_RenderPresent(fb.renderer);
+void draw(framebuffer_t* fb) {
+  plot_triangle(fb, p0, p1, p2, color_to_uint(255, 255, 255));  
 }
 
 int main()
@@ -44,10 +35,12 @@ int main()
     .quit = false
   };
 
+  framebuffer_t fb = system_get_framebuffer(&sys);
+
   while (!in.quit) {
     system_poll(&sys, &in);
 
-    draw();
+    draw(&fb);
 
     system_present(&sys);
   }
