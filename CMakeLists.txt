@@ -14,6 +14,7 @@ set(CMAKE_C_FLAGS_RELEASE "-O2 -Wall")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(external/minifb)
+add_subdirectory(external/SDL)
 
 add_executable(${PROJECT_NAME}
   ./main/main.c
@@ -21,6 +22,7 @@ add_executable(${PROJECT_NAME}
   ./core/math/vector.c
   ./core/math/matrix.c
   ./core/line.c
+  ./core/mesh.c
 )
 
 
@@ -28,4 +30,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_SOURCE_DIR}/core
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE minifb::minifb)
+target_link_libraries(${PROJECT_NAME} PRIVATE minifb::minifb SDL3::SDL3)

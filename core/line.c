@@ -1,13 +1,15 @@
 #include "line.h"
 #include  <stdlib.h>
 
-void set_pixel(framebuffer_t* fb, int x, int y, uint32_t color)
+void set_pixel(framebuffer_t* fb, float x, float y, color_t color)
 {              
-  if (x < 0 || x >= fb->width || y < 0 || y >= fb->height) return;
-  fb->buffer[y * fb->width + x] = color;                                          
+  if (x < 0 || x >= fb->window_width || y < 0 || y >= fb->window_height) return;
+  SDL_SetRenderDrawColor(fb->renderer, color.r, color.g, color.b, color.a);
+  SDL_RenderPoint(fb->renderer, x, y);
+  SDL_RenderPresent(fb->renderer);
 }                                                                                                 
 
-void plot_line(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, uint32_t color)
+void plot_line(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, color_t color)
 {
   if (abs((int)P1.y - (int)P0.y) < abs((int)P1.x - (int)P0.x))
   {
@@ -25,7 +27,7 @@ void plot_line(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, uint32_t color)
   }
 } 
 
-void plot_line_high(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, uint32_t color)
+void plot_line_high(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, color_t color)
 {
   int dx = P1.x - P0.x;
   int dy = P1.y - P0.y;
@@ -55,7 +57,7 @@ void plot_line_high(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, uint32_t color)
   }
 }
 
-void plot_line_low(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, uint32_t color)
+void plot_line_low(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, color_t color)
 {
   int dx = P1.x - P0.x;
   int dy = P1.y - P0.y;
@@ -85,7 +87,7 @@ void plot_line_low(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, uint32_t color)
   }
 }
 
-void plot_triangle(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, vec3f_t P2, uint32_t color) {
+void plot_triangle(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, vec3f_t P2, color_t color) {
   
   float area = (P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y);
   if (area > 0) {
@@ -128,8 +130,8 @@ void plot_triangle(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, vec3f_t P2, uint32
   
   if (minx < 0) minx = 0;
   if (miny < 0) miny = 0;
-  if (maxx > fb->width) maxx = fb->width;
-  if (maxy > fb->height) maxy = fb->height;
+  if (maxx > fb->window_width) maxx = fb->window_width;
+  if (maxy > fb->window_height) maxy = fb->window_height;
 
   // block size 
   const int q = 8;
@@ -178,7 +180,7 @@ void plot_triangle(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, vec3f_t P2, uint32
       if(a == 0xF && b == 0xF && c == 0xF) {
         for(int iy = y; iy < y+q; iy++) {
           for(int ix = x; ix < x+q; ix++)
-            if (ix < fb->width && iy < fb->height)
+            if (ix < fb->window_width && iy < fb->window_height)
               set_pixel(fb, ix, iy, color);
         }
       }
@@ -194,7 +196,7 @@ void plot_triangle(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, vec3f_t P2, uint32
 
           for(int ix = x; ix < x + q; ix++) {
             if(CX1 > 0 && CX2 > 0 && CX3 > 0) 
-              if (ix < fb->width && iy < fb->height)
+              if (ix < fb->window_width && iy < fb->window_height)
                 set_pixel(fb, ix, iy, color);
             CX1 -= FDY12;
             CX2 -= FDY23;
