@@ -24,11 +24,11 @@ mat4x4_t mat4_mul_mat4(mat4x4_t a, mat4x4_t b) {
 }                                                                                   
                                                                                     
 vec4f_t mat4_mul_vec4(mat4x4_t m, vec4f_t v) {                                      
-  vec4f_t res;                                                                      
-  res.x = m.m[0][0] * v.x;                                                          
-  res.y = m.m[0][1] * v.y;                                                          
-  res.z = m.m[0][2] * v.z;                                                          
-  res.w = m.m[0][2] * v.w;                                                          
+  vec4f_t res;              
+  res.x = m.m[0][0]*v.x + m.m[0][1]*v.y + m.m[0][2]*v.z + m.m[0][3]*v.w;
+  res.y = m.m[1][0]*v.x + m.m[1][1]*v.y + m.m[1][2]*v.z + m.m[1][3]*v.w;
+  res.z = m.m[2][0]*v.x + m.m[2][1]*v.y + m.m[2][2]*v.z + m.m[2][3]*v.w;
+  res.w = m.m[3][0]*v.x + m.m[3][1]*v.y + m.m[3][2]*v.z + m.m[3][3]*v.w;
   return res;                                                                       
 }                                                                                   
                                                                                     
@@ -80,7 +80,7 @@ mat4x4_t mat4_rotate(mat4x4_t m, float angle, vec3f_t v) {
 }                                                                                   
                                                                                     
 mat4x4_t mat4_perspective(float fov, float a, float near, float far) {              
-  float f = 1/tan(fov/2.0);                                                         
+  float f = 1.0f / tanf(fov * (float)M_PI / 180.0f / 2.0f);                                                      
                                                                                     
   return (mat4x4_t) {{                                                              
     {f/a,   0, 0,                       0},                                         

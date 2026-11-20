@@ -20,6 +20,7 @@ add_executable(${PROJECT_NAME}
   ./core/renderer.c
   ./core/math/vector.c
   ./core/math/matrix.c
+  ./core/line.c
 )
 
 
