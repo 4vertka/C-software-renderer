@@ -35,4 +35,12 @@ void system_present(system_t* sys) {
 
 void system_shutdown(system_t* sys) {
   SDL_Quit();
-}                                       
+}
+
+framebuffer_t system_get_framebuffer(system_t* sys) {
+  return (framebuffer_t) {
+    .buffer = sys->surface->pixels,
+    .width = sys->surface->w,
+    .height = sys->surface->h
+  };
+}

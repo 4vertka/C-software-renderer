@@ -1,8 +1,16 @@
 #ifndef RENDERER_H
 #define RENDERER_H 
 
+#include <stdint.h>
+
 #include "math/vector.h"
 #include "math/matrix.h"
+
+typedef struct {           
+  uint32_t* buffer;        
+  int width;               
+  int height;              
+} framebuffer_t;          
 
 mat4x4_t build_model_mat(float angle, vec3f_t axis);
 mat4x4_t build_view_mat(vec3f_t pos);

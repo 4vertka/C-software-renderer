@@ -51,7 +51,10 @@ int main()
 
     system_present(&sys);
   }
+  
+  system_shutdown(&sys);
 }
+
   /*
   vec3f_t vertices[3] = {
     {-0.5f, -0.5f, 0.0f},
