@@ -10,30 +10,17 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <system/system.h>
+
 
 static const int width = 800;
 static const int height = 600;
 
 static framebuffer_t fb;
-static bool quit = false;
 
 vec3f_t p0 = {100, 100,0};            
 vec3f_t p1 = {100, 500, 0};           
 vec3f_t p2 = {500, 500, 0};           
-
-void init(void) {
-  SDL_Init(SDL_INIT_VIDEO);                                                                                
-                                                                                                           
-  SDL_Window* window = SDL_CreateWindow("aboba", width, height, SDL_WINDOW_RESIZABLE);                     
-  SDL_Surface* surface = SDL_GetWindowSurface(window);                                                     
-  SDL_Renderer* renderer = SDL_CreateSoftwareRenderer(surface);                                            
-                                                                                                           
-  fb.window = window;                                                                                     
-  fb.surface = surface;                                                                                  
-  fb.renderer = renderer;                                                                               
-  fb.window_width = width;                                                                                 
-  fb.window_height = height;                                                                                                                                                               
-}
 
 void draw(void) {
   SDL_Rect draw_area;
@@ -48,31 +35,24 @@ void draw(void) {
   SDL_RenderPresent(fb.renderer);
 }
 
-void loop(void) {
-  SDL_Event e;
-  while(SDL_PollEvent(&e)) {
-    if (e.type == SDL_EVENT_QUIT) {
-      quit = true;
-    }
-    if ((e.type == SDL_EVENT_KEY_DOWN) && (e.key.key == SDLK_ESCAPE)) {
-      quit = true;
-      return;
-    }
-  }
-
-  draw();
-
-  SDL_UpdateWindowSurface(fb.window);
-}
-
 int main()
 {
+  system_t sys;
+  system_init(&sys, "main window", 800, 600);
   
-  init();
+  input_t in = {
+    .quit = false
+  };
 
-  mesh_t mesh = {0};
-  //build_plane(&mesh, 5, 6);
+  while (!in.quit) {
+    system_poll(&sys, &in);
 
+    draw();
+
+    system_present(&sys);
+  }
+}
+  /*
   vec3f_t vertices[3] = {
     {-0.5f, -0.5f, 0.0f},
     {0.5f, -0.5f, 0.0f},
@@ -125,3 +105,4 @@ int main()
 
   return 0;
 }
+*/

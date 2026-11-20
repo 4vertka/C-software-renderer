@@ -14,17 +14,16 @@
 #define MAX3(a,b,c)   (MAX(MAX(a,b), c))
 
 typedef struct {
-  int r;
-  int g;
-  int b;
-  int a;
+  float r;
+  float g;
+  float b;
+  float a;
 } color_t;
 
 typedef struct {
-  SDL_Window* window;
-  SDL_Surface* surface;
-  SDL_Renderer* renderer;
-  int window_width, window_height;
+  uint32_t* buffer;
+  int width;
+  int height;
 } framebuffer_t;
 
 void set_pixel(framebuffer_t* fb, float x, float y, color_t color);          
