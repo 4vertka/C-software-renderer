@@ -1,5 +1,21 @@
 #include "renderer.h"
 
+
+vec3f_t convert_to_ndc(vec4f_t clip, int w, int h) {
+  vec3f_t res;
+  
+  float inv_w = 1/clip.w;
+  float x_w = clip.x * inv_w;
+  float y_w = clip.y * inv_w;
+  float z_w = clip.z * inv_w;
+
+  res.x = (x_w + 1.0f) * 0.5f * w;
+  res.y = (1.0f - y_w) * 0.5f * h;
+  res.z = 0.0 + z_w * (1.0 - 0.0);
+
+  return res;
+}
+
 mat4x4_t build_model_mat(float angle, vec3f_t axis) {                                                 
   mat4x4_t model = mat4_create(1.0f);                                                                 
   model = mat4_rotate(model, angle, axis);                                                            
@@ -34,4 +50,8 @@ vec4f_t build_mvp_position(mat4x4_t mvp, vec3f_t pos) {
 
 vec4f_t build_color(vec3f_t color) {
   return (vec4f_t) {color.x, color.y, color.z, 1.0f};
+}
+
+void draw_mesh(framebuffer_t* fb, mesh_t* m, mat4x4_t mvp, uint32_t color) {
+
 }
