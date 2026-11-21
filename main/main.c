@@ -6,12 +6,9 @@
 #include <line.h>
 #include <stdio.h>
 
-#include <mesh.h>
-
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <system/system.h>
-
 
 vec3f_t p0 = {100, 100,0};            
 vec3f_t p1 = {100, 500, 0};           
@@ -37,10 +34,39 @@ int main()
 
   framebuffer_t fb = system_get_framebuffer(&sys);
 
+  vec3f_t vertices[3] = {
+    {-0.5f, -0.5f, 0.0f},                    
+    {0.5f, -0.5f, 0.0f},                     
+    {0.0f, 0.5f, 0.0f}                       
+  };
+
+  uint16_t indices[3] = {       
+    0, 1, 2                     
+  };                            
+
+  mesh_t mesh = {
+    .vertices = malloc(sizeof(vec3f_t) * 3),
+    .indices = malloc(sizeof(uint16_t) * 3),
+    .vec_count = 3,
+    .ind_count = 3
+  };
+
+  for (int i = 0; i < mesh.vec_count; i++) {
+    mesh.vertices[i] = vertices[i];
+    mesh.indices[i] = indices[i];
+  }
+
+  mat4x4_t model = build_model_mat(-55.0f, (vec3f_t){1.0f, 0.0f, 0.0f});             
+  mat4x4_t view = build_view_mat((vec3f_t){0.0f, 0.0f, -3.0f});                     
+  mat4x4_t proj = build_projection_mat(45.0f, (float)fb.width/fb.height, 1.0f, 100.0f);   
+                                                                                    
+  mat4x4_t mvp = build_mvp_mat(proj, view, model);                                  
+
   while (!in.quit) {
     system_poll(&sys, &in);
 
-    draw(&fb);
+    draw_mesh(&fb, &mesh, mvp, color_to_uint(255, 255, 255));
+    //draw(&fb);
 
     system_present(&sys);
   }
@@ -61,10 +87,6 @@ int main()
 
   int vert_count = 3;
   int indices_count = 3;
-
-  
-  
-  
   
   mat4x4_t model = build_model_mat(-55.0f, (vec3f_t){1.0f, 0.0f, 0.0f});
   mat4x4_t view = build_view_mat((vec3f_t){0.0f, 0.0f, -3.0f});

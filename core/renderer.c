@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include <line.h>
 
 
 vec3f_t convert_to_ndc(vec4f_t clip, int w, int h) {
@@ -53,5 +54,24 @@ vec4f_t build_color(vec3f_t color) {
 }
 
 void draw_mesh(framebuffer_t* fb, mesh_t* m, mat4x4_t mvp, uint32_t color) {
+  vec3f_t screen[m->vec_count];
+  for (int i = 0; i < m->ind_count; i++) {
+    vec4f_t clip = build_mvp_position(mvp, m->vertices[m->indices[i]]);
 
+    float inv_w = 1/clip.w;
+    float x_w = clip.x * inv_w;
+    float y_w = clip.y * inv_w;
+    float z_w = clip.z * inv_w;
+
+    screen[i].x = (x_w + 1.0f) * 0.5 * fb->width;
+    screen[i].y = (1.0f - y_w) * 0.5 * fb->height;
+    screen[i].z = 0.0 + z_w * (1.0 - 0.0);
+  }
+
+  for (int i = 0; i < m->ind_count-2; i++) {
+    int f = i;
+    int s = ++i;
+    int t = ++i;
+    plot_triangle(fb, screen[f], screen[s], screen[t], color);
+  }
 }

@@ -22,7 +22,6 @@ add_executable(${PROJECT_NAME}
   ./core/math/vector.c
   ./core/math/matrix.c
   ./core/line.c
-  ./core/mesh.c
   ./core/system/system.c
 )
 
