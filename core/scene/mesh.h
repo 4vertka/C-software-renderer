@@ -12,5 +12,6 @@ typedef struct {
 } mesh_t;                           
 
 mesh_t* mesh_create(vec3f_t* vertices, int vec_count, uint16_t* indices, int ind_count);
+void mesh_free(mesh_t* mesh);
 
 #endif 

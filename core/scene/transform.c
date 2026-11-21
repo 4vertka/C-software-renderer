@@ -1,11 +1,11 @@
 #include "transform.h"
 
-transform_t* transform_create(vec3f_t position, vec3f_t rotation, vec3f_t scale) {
-  transform_t* transform = {0};
+transform_t transform_create(vec3f_t position, vec3f_t rotation, vec3f_t scale) {
+  transform_t transform = {0};
 
-  transform->position = position;
-  transform->rotation = rotation;
-  transform->scale = scale;
+  transform.position = position;
+  transform.rotation = rotation;
+  transform.scale = scale;
 
   return transform;
 }
