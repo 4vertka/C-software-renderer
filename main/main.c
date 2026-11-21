@@ -60,7 +60,7 @@ int main()
   //mat4x4_t mvp = build_mvp_mat(cam->projection_mat, cam->view_mat, model);                                  
 
   while (!in.quit) {
-    memset(fb.buffer, 0, sizeof(*fb.buffer));
+    memset(fb.buffer, 0, fb.width * fb.height * sizeof(*fb.buffer));
     system_poll(&sys, &in);
 
     object_draw(object, &fb, cam->view_mat);

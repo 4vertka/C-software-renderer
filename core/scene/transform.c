@@ -14,7 +14,9 @@ mat4x4_t transform_to_mat(const transform_t* t) {
   mat4x4_t trans = mat4_create(1.0f);
 
   trans = mat4_translation(trans, t->position);
-  trans = mat4_rotate(trans, t->rotation.x, t->rotation);
+  trans = mat4_rotate(trans, t->rotation.x, (vec3f_t){1,0,0});
+  trans = mat4_rotate(trans, t->rotation.y, (vec3f_t){0,1,0});
+  trans = mat4_rotate(trans, t->rotation.z, (vec3f_t){0,0,1});
   trans = mat4_scale(trans, t->scale);
 
   return trans;
