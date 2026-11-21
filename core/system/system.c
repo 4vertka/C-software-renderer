@@ -34,6 +34,9 @@ void system_present(system_t* sys) {
 } 
 
 void system_shutdown(system_t* sys) {
+  SDL_DestroyRenderer(sys->renderer);
+  SDL_DestroySurface(sys->surface);
+  SDL_DestroyWindow(sys->window);
   SDL_Quit();
 }
 

@@ -81,7 +81,13 @@ void plot_line_low(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, uint32_t color)
     }                                                                                                                                                                          
   }                                                                                                                                                                            
 }                                                                                                                                                                              
-                                                                                                                                                                               
+ 
+void plot_triangle_wireframe(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, vec3f_t P2, uint32_t color) {
+  plot_line(fb, P0, P1, color);
+  plot_line(fb, P1, P2, color);
+  plot_line(fb, P2, P0, color);
+}
+
 void plot_triangle(framebuffer_t* fb, vec3f_t P0, vec3f_t P1, vec3f_t P2, uint32_t color) {                                                                                    
                                                                                                                                                                                
   float area = (P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y);                                                                                                  

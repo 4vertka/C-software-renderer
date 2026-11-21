@@ -2,9 +2,6 @@
 
 #define MAX_MESH_VERTICES     1000
 
-static mesh_t meshes[255];
-static int mesh_count = 0;
-
 vec3f_t convert_to_ndc(vec4f_t clip, int w, int h) {
   vec3f_t res;
   
@@ -52,50 +49,6 @@ vec4f_t build_mvp_position(mat4x4_t mvp, vec3f_t pos) {
   return position;                                                                                    
 }          
 
-vec4f_t build_color(vec3f_t color) {
-  return (vec4f_t) {color.x, color.y, color.z, 1.0f};
-}
-
-mesh_t* mesh_init(vec3f_t* vertices, int vec_count, uint16_t* indices, int ind_count) {
-  mesh_t* mesh = &meshes[mesh_count];
-
-  mesh->vertices = vertices;
-  mesh->indices = indices;
-  mesh->vec_count = vec_count;
-  mesh->ind_count = ind_count;
-  
-  mesh_init_default(mesh);
-
-  mesh_count++;
-
-  return mesh;
-}
-
-void mesh_init_default(mesh_t* mesh) {
- // mesh->rotation = (vec3f_t){0,0,0};
-  //mesh->angle = -55.0;
-  //mesh->scale = (vec3f_t){1,1,1};
-  //mesh->translation = (vec3f_t){0,0,0};
-}
-
-void mesh_draw(framebuffer_t* fb, mesh_t* m, mat4x4_t mvp, uint32_t color) {
-  vec3f_t screen[m->vec_count];
-  for (int i = 0; i < m->ind_count; i++) {
-    vec4f_t clip = build_mvp_position(mvp, m->vertices[m->indices[i]]);
-
-    vec3f_t res = convert_to_ndc(clip, fb->width, fb->height);
-
-    screen[i] = res;
-  }
-
-  for (int i = 0; i < m->ind_count-2; i++) {
-    int f = i;
-    int s = ++i;
-    int t = ++i;
-    plot_triangle(fb, screen[f], screen[s], screen[t], color);
-  }
-}
-
 void object_draw(const object_t* object, framebuffer_t* fb, mat4x4_t view) {
   const mesh_t* mesh = object->mesh;
   mat4x4_t model = transform_to_mat(&object->transform);
@@ -106,16 +59,21 @@ void object_draw(const object_t* object, framebuffer_t* fb, mat4x4_t view) {
     vec4f_t clip = build_mvp_position(mvp, mesh->vertices[i]);
     screen[i] = convert_to_ndc(clip, fb->width, fb->height);
   }
-
+  
   for (int i = 0; i + 2 < mesh->ind_count; i+=3) {
-    plot_triangle(fb, screen[i], screen[i+1], screen[i+2], object->color);
+    vec3f_t a = screen[mesh->indices[i]];
+    vec3f_t b = screen[mesh->indices[i+1]];
+    vec3f_t c = screen[mesh->indices[i+2]];
+
+    switch (object->mode) {
+      case RENDER_FILLED:
+        plot_triangle(fb, a, b, c, object->color);
+        break;
+      case RENDER_WIREFRAME:
+        plot_triangle_wireframe(fb, a, b,c, object->color);
+        break;
+    }
+
+    //plot_triangle(fb, screen[i], screen[i+1], screen[i+2], object->color);
   }
-}
-
-int mesh_get_count(void) {
-  return mesh_count;
-}
-
-mesh_t* mesh_get(int index) {
-  return &meshes[index];
 }
