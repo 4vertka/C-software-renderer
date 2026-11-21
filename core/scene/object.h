@@ -1,13 +1,15 @@
 #ifndef OBJECT_H 
 #define OBJECT_H
 
-#include <mesh.h>
-#include <transform.h>
+#include <scene/mesh.h>
+#include <scene/transform.h>
 
 typedef struct {
   const mesh_t* mesh;
   transform_t transform;
   uint32_t color;
 } object_t;
+
+object_t* object_create(const mesh_t* mesh, transform_t transform, uint32_t color);
 
 #endif 

@@ -25,6 +25,11 @@ add_executable(${PROJECT_NAME}
   ./core/framebuffer.c
   ./core/raster.c
   ./core/camera.c
+
+  ./core/scene/mesh.c
+  ./core/scene/object.c
+  ./core/scene/transform.c
+  ./core/scene/scene.c
 )
 
 
