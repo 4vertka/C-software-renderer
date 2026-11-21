@@ -39,7 +39,7 @@ camera_t* camera_create(float fov,
 }  
 
 void camera_update(camera_t* camera, input_t* in, float dt) {
-   
+     
 }
 
 void camera_free(camera_t* camera) {
