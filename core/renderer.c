@@ -49,6 +49,18 @@ vec4f_t build_mvp_position(mat4x4_t mvp, vec3f_t pos) {
   return position;                                                                                    
 }          
 
+float black_face_culling(vec3f_t a, vec3f_t b, vec3f_t c) {
+  vec3f_t ab = vec3_minus_vec3(a, b);
+  vec3f_t ac = vec3_minus_vec3(a, c);
+
+  vec3f_t cross = vec3_cross(ab, ac);
+  vec3f_t normalized = vec3_unit(cross);
+
+  float result = vec3_dot(normalized, (vec3f_t){0,0,-3});
+
+  return result;
+}
+
 void object_draw(const object_t* object, framebuffer_t* fb, mat4x4_t view) {
   const mesh_t* mesh = object->mesh;
   mat4x4_t model = transform_to_mat(&object->transform);
@@ -64,6 +76,9 @@ void object_draw(const object_t* object, framebuffer_t* fb, mat4x4_t view) {
     vec3f_t a = screen[mesh->indices[i]];
     vec3f_t b = screen[mesh->indices[i+1]];
     vec3f_t c = screen[mesh->indices[i+2]];
+    
+    float visibility = black_face_culling(a, b, c);
+    if (visibility < 0.0f) continue;
 
     switch (object->mode) {
       case RENDER_FILLED:
@@ -73,7 +88,5 @@ void object_draw(const object_t* object, framebuffer_t* fb, mat4x4_t view) {
         plot_triangle_wireframe(fb, a, b,c, object->color);
         break;
     }
-
-    //plot_triangle(fb, screen[i], screen[i+1], screen[i+2], object->color);
   }
 }

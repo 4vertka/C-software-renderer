@@ -35,29 +35,40 @@ int main()
 
   framebuffer_t fb = system_get_framebuffer(&sys);
 
-  vec3f_t vertices[3] = {
-    {-0.5f, -0.5f, 0.0f},                    
-    {0.5f, -0.5f, 0.0f},                     
-    {0.0f, 0.5f, 0.0f}                       
+  vec3f_t vertices[] = {
+    {-0.5, -0.5,  0.5},                    
+    {0.5, -0.5,  0.5},                     
+    {0.5,  0.5,  0.5},
+    {-0.5,  0.5,  0.5},
+    {-0.5, -0.5, -0.5},
+    {0.5, -0.5, -0.5},
+    {0.5,  0.5, -0.5},
+    {-0.5,  0.5, -0.5}
   };
 
-  uint16_t indices[3] = {       
-    0, 1, 2                     
+  uint16_t indices[] = {       
+    0, 1, 2,  2, 3, 0,
+    1, 5, 6,  6, 2, 1,
+    5, 4, 7,  7, 6, 5,
+    4, 0, 3,  3, 7, 4,
+    3, 2, 6,  6, 7, 3,
+    4, 5, 1,  1, 0, 4
   };                            
 
   camera_t* cam = camera_create(45.0f, (float)fb.width/fb.height, 0.1f, 100.f, (vec3f_t){0.0f, 0.0f, -3.0f}, (vec3f_t){0,0,0});
     
-  mesh_t* mesh = mesh_create(vertices, 3, indices, 3);
+  mesh_t* mesh = mesh_create(vertices, sizeof(vertices)/sizeof(vec3f_t), indices, sizeof(indices)/sizeof(uint16_t));
   transform_t transform = transform_create((vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1});
-  object_t* object = object_create(mesh, transform, color_to_uint(255, 255, 255), RENDER_FILLED);
+  object_t* object = object_create(mesh, transform, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
 
  // mat4x4_t mvp = build_mvp_mat(cam->projection_mat, cam->view_mat, model);                                  
-
+  float angle = 0.0;
   while (!in.quit) {
     memset(fb.buffer, 0, fb.width * fb.height * sizeof(*fb.buffer));
     system_poll(&sys, &in);
-
-    //object->transform.rotation.z += 0.1f;
+    
+    angle += 0.01f;
+    object->transform.rotation.y = angle;
     object_draw(object, &fb, cam->view_mat);
 
     system_present(&sys);

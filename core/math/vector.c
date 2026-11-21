@@ -30,6 +30,10 @@ vec3f_t vec3_div_scalar(vec3f_t a, float scalar) {
   return (vec3f_t) {a.x/scalar, a.y/scalar, a.z/scalar};
 }
 
+vec3f_t vec3_minus_vec3(vec3f_t a, vec3f_t b) {
+  return (vec3f_t) {a.x - b.x, a.y - b.y, a.z - b.z};
+}
+
 //vec4
 float vec4_dot(vec4f_t a, vec4f_t b) {                                                     
   return a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w;                                            
