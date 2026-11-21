@@ -70,8 +70,8 @@ mesh_t* mesh_init(vec3f_t* vertices, int vec_count, uint16_t* indices, int ind_c
 }
 
 void mesh_init_default(mesh_t* mesh) {
-  mesh->rotation = (vec3f_t){0,0,0};
-  mesh->angle = -55.0;
+ // mesh->rotation = (vec3f_t){0,0,0};
+  //mesh->angle = -55.0;
   //mesh->scale = (vec3f_t){1,1,1};
   //mesh->translation = (vec3f_t){0,0,0};
 }

@@ -14,9 +14,15 @@ typedef struct {
   float near;
   float far;
 
-  mat4x4_t view;
-  mat4x4_t projection;
-
+  mat4x4_t view_mat;
+  mat4x4_t projection_mat;
 } camera_t;
+
+camera_t* camera_create(float fov,
+                        float aspect,
+                        float near,
+                        float far,
+                        vec3f_t pos,
+                        vec3f_t target);
 
 #endif 

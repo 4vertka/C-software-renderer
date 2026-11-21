@@ -8,6 +8,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <system/system.h>
+#include <camera.h>
 
 vec3f_t p0 = {100, 100,0};            
 vec3f_t p1 = {100, 500, 0};           
@@ -42,10 +43,12 @@ int main()
   mesh_t* mesh = mesh_init(vertices, 3, indices, 3);
 
   mat4x4_t model = build_model_mat(0.0f, (vec3f_t){1.0f, 0.0f, 0.0f});             
-  mat4x4_t view = build_view_mat((vec3f_t){0.0f, 0.0f, -3.0f});                     
-  mat4x4_t proj = build_projection_mat(45.0f, (float)fb.width/fb.height, 1.0f, 100.0f);   
+  
+  camera_t* cam = camera_create(45.0f, (float)fb.width/fb.height, 0.1f, 100.f, (vec3f_t){0.0f, 0.0f, -3.0f}, (vec3f_t){0,0,0});
+  //mat4x4_t view = build_view_mat((vec3f_t){0.0f, 0.0f, -3.0f});                     
+  //mat4x4_t proj = build_projection_mat(45.0f, (float)fb.width/fb.height, 1.0f, 100.0f);   
                                                                                     
-  mat4x4_t mvp = build_mvp_mat(proj, view, model);                                  
+  mat4x4_t mvp = build_mvp_mat(cam->projection_mat, cam->view_mat, model);                                  
 
   while (!in.quit) {
     memset(fb.buffer, 0, sizeof(*fb.buffer));

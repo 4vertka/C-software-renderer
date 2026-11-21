@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
   ./core/system/system.c
   ./core/framebuffer.c
   ./core/raster.c
+  ./core/camera.c
 )
 
 
