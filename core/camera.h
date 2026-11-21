@@ -3,11 +3,16 @@
 
 #include <math/vector.h>
 #include <math/matrix.h>
+#include "system/system.h"
 
 typedef struct {
   vec3f_t position;
   vec3f_t target;
   vec3f_t rotation;
+  
+  vec3f_t direction;
+  vec3f_t up;
+  vec3f_t right;
 
   float fov;
   float aspect;
@@ -23,6 +28,11 @@ camera_t* camera_create(float fov,
                         float near,
                         float far,
                         vec3f_t pos,
-                        vec3f_t target);
+                        vec3f_t target,
+                        vec3f_t up);
+
+void camera_update(camera_t* camera, input_t* in, float dt);
+
+void camera_free(camera_t* camera);
 
 #endif 

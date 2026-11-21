@@ -12,11 +12,6 @@
 #include <scene/mesh.h>
 #include <scene/object.h>
 
-
-
-
-
-
 void object_draw(const object_t* object, framebuffer_t* fb, mat4x4_t view);
 
 mat4x4_t build_model_mat(float angle, vec3f_t axis);

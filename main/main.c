@@ -61,7 +61,6 @@ int main()
   transform_t transform = transform_create((vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1});
   object_t* object = object_create(mesh, transform, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
 
- // mat4x4_t mvp = build_mvp_mat(cam->projection_mat, cam->view_mat, model);                                  
   float angle = 0.0;
   while (!in.quit) {
     memset(fb.buffer, 0, fb.width * fb.height * sizeof(*fb.buffer));
@@ -69,6 +68,7 @@ int main()
     
     angle += 0.01f;
     object->transform.rotation.y = angle;
+    object->transform.rotation.x = angle;
     object_draw(object, &fb, cam->view_mat);
 
     system_present(&sys);

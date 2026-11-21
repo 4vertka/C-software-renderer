@@ -15,6 +15,7 @@ typedef struct {
 
 typedef struct {
   bool quit;
+  bool forward, backward, left, right, up, down;
 } input_t;
 
 bool system_init(system_t* sys, const char* title, int w, int h);

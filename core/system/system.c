@@ -21,11 +21,33 @@ bool system_init(system_t* sys, const char* title, int w, int h) {
 void system_poll(system_t* sys, input_t* in) {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
+    switch (e.type) {
+      case SDL_EVENT_QUIT: in->quit = true; break;
+      
+      case SDL_EVENT_KEY_DOWN: { 
+        switch (e.key.key) {
+          case SDLK_ESCAPE: in->quit = true; break;
+          case SDLK_W: in->forward = true; break;
+          case SDLK_S: in->backward = true; break;
+        }
+      }
+      case SDL_EVENT_KEY_UP: {
+        switch (e.key.key) {
+          case SDLK_W: in->forward = false; break;
+          case SDLK_S: in->backward = false; break;
+        }
+      }
+    }
+    /*
     if (e.type == SDL_EVENT_QUIT)
       in->quit = true;
     if ((e.type == SDL_EVENT_KEY_DOWN) && (e.key.key == SDLK_ESCAPE)) {
       in->quit = true;
     }
+    if ((e.type == SDL_EVENT_KEY_DOWN) && (e.key.key == SDLK_W)) {
+      
+    }
+    */
   }
 } 
 

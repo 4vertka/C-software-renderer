@@ -91,8 +91,19 @@ mat4x4_t mat4_perspective(float fov, float a, float near, float far) {
 }
 
 mat4x4_t mat4_lookat(vec3f_t eye, vec3f_t target, vec3f_t up){
+  vec3f_t forward = vec3_minus_vec3(eye, target);
+  forward = vec3_unit(forward);
 
-  mat4x4_t res;
-  return res;
+  vec3f_t right = vec3_cross(up, forward);
+  vec3_unit(right);
+
+  vec3f_t _up = vec3_cross(forward, right);
+
+  return (mat4x4_t) {{
+    {right.x,   right.y,    right.z,    0},
+    {_up.x,     _up.y,      _up.z,      0},
+    {forward.x, forward.y,  forward.z,  0},
+    {eye.x,     eye.y,      eye.z,      1}
+  }};
 }
                                                                                     

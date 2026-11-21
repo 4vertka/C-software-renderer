@@ -6,9 +6,11 @@
 
 typedef struct {                    
   vec3f_t* vertices;                
-  uint16_t* indices;                
+  uint16_t* indices;
+  uint16_t* line_indices;
   int vec_count;                    
-  int ind_count;                    
+  int ind_count;         
+  int li_count;
 } mesh_t;                           
 
 mesh_t* mesh_create(vec3f_t* vertices, int vec_count, uint16_t* indices, int ind_count);

@@ -1,20 +1,22 @@
 #include <camera.h>
 
 #include <renderer.h>
+#include <stdlib.h>
 
 #define MAX_CAMERAS 10
 
-static camera_t cameras[MAX_CAMERAS];
-static int camera_count = 0;
+//static camera_t cameras[MAX_CAMERAS];
+//static int camera_count = 0;
 
 camera_t* camera_create(float fov,                
                         float aspect,             
                         float near,               
                         float far,                
                         vec3f_t pos,              
-                        vec3f_t target) {
+                        vec3f_t target,
+                        vec3f_t up) {
 
-  camera_t* cam = &cameras[camera_count];
+  camera_t* cam = malloc(sizeof(*cam));//&cameras[camera_count];
   
   cam->fov = fov;
   cam->aspect = aspect;
@@ -23,11 +25,23 @@ camera_t* camera_create(float fov,
   cam->position = pos;
   cam->target = target;
 
+  cam->direction = vec3_unit(vec3_minus_vec3(pos, target));
+  cam->right = vec3_unit(vec3_cross(up, cam->direction)); 
+  cam->up = vec3_cross(cam->direction, cam->right);
+
   cam->projection_mat = build_projection_mat(cam->fov, cam->aspect, cam->near, cam->far); 
 
   cam->view_mat = build_view_mat(cam->position);
 
-  camera_count++;
+  //camera_count++;
 
   return cam;
-}     
+}  
+
+void camera_update(camera_t* camera, input_t* in, float dt) {
+   
+}
+
+void camera_free(camera_t* camera) {
+  free(camera);
+}
