@@ -5,19 +5,18 @@
 
 #include "math/vector.h"
 #include "math/matrix.h"
-
-typedef struct {           
-  uint32_t* buffer;        
-  int width;               
-  int height;              
-} framebuffer_t;          
+#include <framebuffer.h>
+#include <raster.h>
 
 typedef struct {                  
   vec3f_t* vertices;              
   int vec_count;                  
                                   
   uint16_t* indices;              
-  int ind_count;                  
+  int ind_count;           
+
+  vec3f_t rotation;
+  float angle;
 } mesh_t;  
 
 mat4x4_t build_model_mat(float angle, vec3f_t axis);
@@ -30,6 +29,10 @@ vec4f_t build_color(vec3f_t color);
 
 vec3f_t convert_to_ndc(vec4f_t clip, int w, int h);
 
-void draw_mesh(framebuffer_t* fb, mesh_t* m, mat4x4_t mvp, uint32_t color);
+mesh_t* mesh_init(vec3f_t* vertices, int vec_count, uint16_t* indices, int ind_count);
+void mesh_draw(framebuffer_t* fb, mesh_t* m, mat4x4_t mvp, uint32_t color);
+int mesh_get_count(void);
+mesh_t* mesh_get(int index);
+void mesh_init_default(mesh_t* mesh);
 
 #endif 
