@@ -8,16 +8,16 @@
 #include <framebuffer.h>
 #include <raster.h>
 
-typedef struct {                  
-  vec3f_t* vertices;              
-  int vec_count;                  
-                                  
-  uint16_t* indices;              
-  int ind_count;           
 
-  vec3f_t rotation;
-  float angle;
-} mesh_t;  
+
+
+
+
+
+
+
+
+
 
 mat4x4_t build_model_mat(float angle, vec3f_t axis);
 mat4x4_t build_view_mat(vec3f_t pos);
