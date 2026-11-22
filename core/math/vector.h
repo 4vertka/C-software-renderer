@@ -33,6 +33,8 @@ vec3f_t vec3_unit(vec3f_t a);
 vec3f_t vec3_div_scalar(vec3f_t a, float scalar);
 
 vec3f_t vec3_minus_vec3(vec3f_t a, vec3f_t b);
+vec3f_t vec3_add_vec3(vec3f_t a, vec3f_t b);
+vec3f_t vec3_mul_scalar(vec3f_t a, float scalar);
 
 //vec4
 float vec4_dot(vec4f_t a, vec4f_t b);

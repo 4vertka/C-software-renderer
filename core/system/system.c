@@ -1,5 +1,7 @@
 #include "system.h"
 
+#include <stdio.h>
+
 bool system_init(system_t* sys, const char* title, int w, int h) {
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -29,13 +31,23 @@ void system_poll(system_t* sys, input_t* in) {
           case SDLK_ESCAPE: in->quit = true; break;
           case SDLK_W: in->forward = true; break;
           case SDLK_S: in->backward = true; break;
+          case SDLK_A: in->left     = true; break;
+          case SDLK_D: in->right    = true; break;
+          case SDLK_SPACE:  in->up   = true; break;
+          case SDLK_LSHIFT: in->down = true; break;
         }
+        break;
       }
       case SDL_EVENT_KEY_UP: {
         switch (e.key.key) {
-          case SDLK_W: in->forward = false; break;
+          case SDLK_W: in->forward  = false; break;
           case SDLK_S: in->backward = false; break;
+          case SDLK_A: in->left     = false; break;
+          case SDLK_D: in->right    = false; break;
+          case SDLK_SPACE:  in->up   = false; break;
+          case SDLK_LSHIFT: in->down = false; break;
         }
+        break;
       }
     }
     /*

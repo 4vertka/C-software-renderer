@@ -7,11 +7,13 @@
 
 typedef struct {
   vec3f_t position;
-  vec3f_t target;
   vec3f_t rotation;
   
-  vec3f_t direction;
+  vec3f_t eye;
+  vec3f_t target;
   vec3f_t up;
+
+  vec3f_t direction;
   vec3f_t right;
 
   float fov;
@@ -28,6 +30,7 @@ camera_t* camera_create(float fov,
                         float near,
                         float far,
                         vec3f_t pos,
+                        vec3f_t eye,
                         vec3f_t target,
                         vec3f_t up);
 
