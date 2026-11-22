@@ -18,6 +18,12 @@ typedef struct {
   bool forward, backward, left, right, up, down;
 } input_t;
 
+typedef struct {
+  Uint32 last;
+  Uint32 now;
+  float dt;
+} dt_t;
+
 bool system_init(system_t* sys, const char* title, int w, int h);
 void system_poll(system_t* sys, input_t* in);
 void system_present(system_t* sys);

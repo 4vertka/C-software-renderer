@@ -76,26 +76,36 @@ int main()
   float angle = 0.0;
   float camera_angle = 0.0;
 
-  Uint32 last = SDL_GetTicks();
+  dt_t delta_time = {                 
+    .last = SDL_GetTicks(),           
+    .now = 0,                         
+    .dt = 0                           
+  };                                  
+
+  //Uint32 last = SDL_GetTicks();
 
   while (!in.quit) {
-    Uint32 now = SDL_GetTicks();
-    float dt = (now - last) / 1000.0f;
-    last = now;
+    delta_time.now = SDL_GetTicks();
+    delta_time.dt = (delta_time.now - delta_time.last) / 1000.0f; 
+    delta_time.last = delta_time.now;
+    //Uint32 now = SDL_GetTicks();
+    //float dt = (now - last) / 1000.0f;
+    //last = now;
 
     memset(fb.buffer, 0, fb.width * fb.height * sizeof(*fb.buffer));
     system_poll(&sys, &in);
     //camera_update(cam, &in, dt);
 
-    const float radius = 10.0f;
-    camera_angle += dt * 0.5f;
+    //const float radius = 10.0f;
+    //camera_angle += dt * 0.5f;
 
-    float camX = sinf(camera_angle) * radius;
-    float camZ = cosf(camera_angle) * radius;
+    //float camX = sinf(camera_angle) * radius;
+    //float camZ = cosf(camera_angle) * radius;
 
     //cam->view_mat = mat4_lookat((vec3f_t){camX, 0.0, camZ}, (vec3f_t){0,0,0}, (vec3f_t){0.0, 1.0f, 0.0});
 
-    //angle += dt * 1.0f;
+    angle += delta_time.dt * 5.0f;
+    elip->transform.rotation.y = angle;
     //object->transform.rotation.y = angle;
     //object->transform.rotation.x = angle;
     
@@ -106,6 +116,7 @@ int main()
     system_present(&sys);
   }
   
+  elip_free(elip);
   camera_free(cam);
   //mesh_free(mesh);
   //object_free(object);

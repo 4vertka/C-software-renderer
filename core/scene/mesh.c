@@ -26,5 +26,6 @@ mesh_t* mesh_create(vec3f_t* vertices, int vec_count, uint16_t* indices, int ind
 void mesh_free(mesh_t* mesh) {
   free(mesh->vertices);
   free(mesh->indices);
+  free(mesh->line_indices);
   free(mesh);
 }
