@@ -29,9 +29,10 @@ elip_t* elip_create(vec3f_t radii, int sector_count, int stack_count,
   return elip;
 }
 
-void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view) {                           
-  mat4x4_t model = transform_to_mat(&elip->transform);                                     
-  mat4x4_t mvp = mat4_mul_mat4(view, model);                                               
+void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view, mat4x4_t proj) {                           
+  mat4x4_t model = transform_to_mat(&elip->transform);                   
+  mat4x4_t mv = mat4_mul_mat4(view, model);
+  mat4x4_t mvp = mat4_mul_mat4(proj, mv);                                               
                                                                                            
   vec3f_t* screen = malloc(elip->mesh->vec_count * sizeof(*screen));                             
   for (int i = 0; i < elip->mesh->vec_count; i++) {                                              

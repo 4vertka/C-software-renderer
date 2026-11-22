@@ -82,19 +82,14 @@ int main()
     .dt = 0                           
   };                                  
 
-  //Uint32 last = SDL_GetTicks();
-
   while (!in.quit) {
     delta_time.now = SDL_GetTicks();
     delta_time.dt = (delta_time.now - delta_time.last) / 1000.0f; 
     delta_time.last = delta_time.now;
-    //Uint32 now = SDL_GetTicks();
-    //float dt = (now - last) / 1000.0f;
-    //last = now;
 
     memset(fb.buffer, 0, fb.width * fb.height * sizeof(*fb.buffer));
     system_poll(&sys, &in);
-    //camera_update(cam, &in, dt);
+    camera_update(cam, &in, delta_time.dt);
 
     //const float radius = 10.0f;
     //camera_angle += dt * 0.5f;
@@ -109,7 +104,7 @@ int main()
     //object->transform.rotation.y = angle;
     //object->transform.rotation.x = angle;
     
-    elip_draw(elip, &fb, cam->view_mat);
+    elip_draw(elip, &fb, cam->view_mat, cam->projection_mat);
 
     //object_draw(object, &fb, cam->view_mat);
 
@@ -118,7 +113,5 @@ int main()
   
   elip_free(elip);
   camera_free(cam);
-  //mesh_free(mesh);
-  //object_free(object);
   system_shutdown(&sys);
 }

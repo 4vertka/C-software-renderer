@@ -26,7 +26,7 @@ elip_t* elip_create(vec3f_t radii, int sector_count, int stack_count,
 
 //void elip_build(elip_t* elip);
 
-void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view);
+void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view, mat4x4_t proj);
 
 void elip_free(elip_t* elip);
 
