@@ -2,7 +2,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-elip_t* elip_create(vec3f_t radii, int sector_count, int stack_count) { 
+#define MAX_ELIP_VERTICES 1000
+
+elip_t* elip_create(vec3f_t radii, int sector_count, int stack_count,
+                    vec3f_t position, vec3f_t rotation, vec3f_t scale,                
+                    uint32_t color, render_mode_e mode) {                              
+
   elip_t* elip = malloc(sizeof(*elip));
   if (!elip) return NULL; 
 
@@ -23,7 +28,47 @@ elip_t* elip_create(vec3f_t radii, int sector_count, int stack_count) {
     return NULL;
   }
 
+  elip->transform.position = position;
+  elip->transform.rotation = rotation;
+  elip->transform.scale = scale;
+
+  elip->color = color;
+  elip->mode = mode;
+
+  elip_build(elip);
+
   return elip;
+}
+
+void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view) {
+  mat4x4_t model = transform_to_mat(&elip->transform);
+  mat4x4_t mvp = mat4_mul_mat4(view, model);
+
+  vec3f_t* screen = malloc(elip->vec_count * sizeof(*screen));
+  for (int i = 0; i < elip->vec_count; i++) {
+    vec4f_t clip = build_mvp_position(mvp, elip->vertices[i]);
+    screen[i] = convert_to_ndc(clip, fb->width, fb->height);
+  }
+
+  for (int i = 0; i + 2 < elip->ind_count; i+=3) {
+    vec3f_t a = screen[elip->indices[i]];
+    vec3f_t b = screen[elip->indices[i+1]];
+    vec3f_t c = screen[elip->indices[i+2]];
+
+    float visibility = black_face_culling(a, b, c);
+    if (visibility < 0.0f) continue;
+
+    switch (elip->mode) {
+      case RENDER_FILLED:
+        plot_triangle(fb, a, b, c, elip->color);
+        break;
+      case RENDER_WIREFRAME:
+        plot_triangle_wireframe(fb, a, b, c, elip->color);
+        break;
+    }
+  }
+
+  free(screen);
 }
 
 void elip_build(elip_t* elip) {
@@ -36,7 +81,7 @@ void elip_build(elip_t* elip) {
   float x, y, z, xy;
 
   float sector_step = 2 * M_PI / elip->sectors;
-  float stack_step = M_PI / stack_step;
+  float stack_step = M_PI / elip->stacks;
   float sector_angle, stack_angle;
 
   for (int i = 0; i <= elip->stacks; ++i) {
@@ -91,4 +136,5 @@ void elip_free(elip_t* elip) {
   free(elip->vertices);
   free(elip->indices);
   free(elip->line_indices);
+  free(elip);
 }

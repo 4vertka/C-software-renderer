@@ -15,6 +15,8 @@
 #include <scene/transform.h>
 #include <scene/scene.h>
 
+#include <elip.h>
+
 #include <time.h>
 
 vec3f_t p0 = {100, 100,0};            
@@ -65,9 +67,11 @@ int main()
 
   camera_t* cam = camera_create(radins(45.0f), (float)fb.width/fb.height, 0.1f, 100.0f, (vec3f_t){0,0,-3}, (vec3f_t){0,0,0});
 
-  mesh_t* mesh = mesh_create(vertices, sizeof(vertices)/sizeof(vec3f_t), indices, sizeof(indices)/sizeof(uint16_t));
-  transform_t transform = transform_create((vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1});
-  object_t* object = object_create(mesh, transform, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
+  //mesh_t* mesh = mesh_create(vertices, sizeof(vertices)/sizeof(vec3f_t), indices, sizeof(indices)/sizeof(uint16_t));
+  //transform_t transform = transform_create((vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1});
+  //object_t* object = object_create(mesh, transform, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
+
+  elip_t* elip = elip_create((vec3f_t){1.0f,1.0f,1.0f}, 36, 18, (vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1}, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
 
   float angle = 0.0;
   float camera_angle = 0.0;
@@ -94,14 +98,16 @@ int main()
     //angle += dt * 1.0f;
     //object->transform.rotation.y = angle;
     //object->transform.rotation.x = angle;
+    
+    elip_draw(elip, &fb, cam->view_mat);
 
-    object_draw(object, &fb, cam->view_mat);
+    //object_draw(object, &fb, cam->view_mat);
 
     system_present(&sys);
   }
   
   camera_free(cam);
-  mesh_free(mesh);
-  object_free(object);
+  //mesh_free(mesh);
+  //object_free(object);
   system_shutdown(&sys);
 }

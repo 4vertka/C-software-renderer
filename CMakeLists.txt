@@ -30,6 +30,8 @@ add_executable(${PROJECT_NAME}
   ./core/scene/object.c
   ./core/scene/transform.c
   ./core/scene/scene.c
+
+  ./core/elip.c
 )
 
 

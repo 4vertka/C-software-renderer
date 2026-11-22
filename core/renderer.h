@@ -22,5 +22,6 @@ mat4x4_t build_mvp_mat(mat4x4_t proj, mat4x4_t view, mat4x4_t model);
 vec4f_t build_mvp_position(mat4x4_t mvp, vec3f_t pos);
 
 vec3f_t convert_to_ndc(vec4f_t clip, int w, int h);
+float black_face_culling(vec3f_t a, vec3f_t b, vec3f_t c);
 
 #endif 
