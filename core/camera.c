@@ -4,47 +4,26 @@
 #include <stdlib.h>
 #include  <stdio.h>
 
+static vec3f_t up = {0, 1, 0};
 
-#define MAX_CAMERAS 10
+camera_t* camera_create(float fov, float aspect, float z_near, float z_far, vec3f_t position, vec3f_t target) {
+  camera_t* cam = malloc(sizeof(*cam));
 
-//static camera_t cameras[MAX_CAMERAS];
-//static int camera_count = 0;
-
-camera_t* camera_create(float fov,                
-                        float aspect,             
-                        float near,               
-                        float far,                
-                        vec3f_t pos,  
-                        vec3f_t eye,
-                        vec3f_t target,
-                        vec3f_t up) {
-
-  camera_t* cam = malloc(sizeof(*cam));//&cameras[camera_count];
-  
   cam->fov = fov;
   cam->aspect = aspect;
-  cam->near = near;
-  cam->far = far;
-  cam->position = pos;
-  
-  cam->eye = eye;
+  cam->z_near = z_near;
+  cam->z_far = z_far;
+  cam->position = position;
   cam->target = target;
-  cam->up = up;
 
-  //cam->direction = vec3_unit(vec3_minus_vec3(pos, target));
-  //cam->right = vec3_unit(vec3_cross(up, cam->direction)); 
-  //cam->up = vec3_cross(cam->direction, cam->right);
+  cam->projection_mat = mat4_perspective(cam->fov, cam->aspect, cam->z_near, cam->z_far);
 
-  cam->projection_mat = build_projection_mat(cam->fov, cam->aspect, cam->near, cam->far); 
-
-  cam->view_mat = mat4_lookat(pos, vec3_add_vec3(pos, target), up); 
-  //cam->view_mat = build_view_mat(cam->position);
-
-  //camera_count++;
+  cam->view_mat = mat4_lookat(position, target, up);
 
   return cam;
-}  
+}
 
+/*
 void camera_update(camera_t* camera, input_t* in, float dt) {
   const float speed = 3.0f * dt;
   
@@ -60,6 +39,7 @@ void camera_update(camera_t* camera, input_t* in, float dt) {
 
   camera->view_mat = mat4_lookat(camera->position, vec3_add_vec3(camera->position, forward), camera->up);
 }
+*/
 
 void camera_free(camera_t* camera) {
   free(camera);

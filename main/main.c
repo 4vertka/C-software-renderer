@@ -63,16 +63,11 @@ int main()
     4, 5, 1,  1, 0, 4
   };                            
 
-  camera_t* cam = camera_create(45.0f, (float)fb.width/fb.height,
-      0.1f, 100.f,
-      (vec3f_t){0.0f, 0.0f, -3.0f},
-      (vec3f_t){0,0,0}, (vec3f_t){0,0,-1}, (vec3f_t){0,1,0});
-    
+  camera_t* cam = camera_create(radins(45.0f), (float)fb.width/fb.height, 0.1f, 100.0f, (vec3f_t){0,0,-3}, (vec3f_t){0,0,0});
+
   mesh_t* mesh = mesh_create(vertices, sizeof(vertices)/sizeof(vec3f_t), indices, sizeof(indices)/sizeof(uint16_t));
   transform_t transform = transform_create((vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1});
   object_t* object = object_create(mesh, transform, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
-
-  //cam->view_mat = mat4_lookat((vec3f_t){0,0,3.0f}, (vec3f_t){0,0,0}, (vec3f_t){0,1,0});
 
   float angle = 0.0;
   float camera_angle = 0.0;
@@ -86,7 +81,7 @@ int main()
 
     memset(fb.buffer, 0, fb.width * fb.height * sizeof(*fb.buffer));
     system_poll(&sys, &in);
-    camera_update(cam, &in, dt);
+    //camera_update(cam, &in, dt);
 
     const float radius = 10.0f;
     camera_angle += dt * 0.5f;

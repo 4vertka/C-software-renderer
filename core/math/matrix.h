@@ -21,4 +21,7 @@ mat4x4_t mat4_translation(mat4x4_t m, vec3f_t v);
 mat4x4_t mat4_rotate(mat4x4_t m, float angle, vec3f_t v);
 mat4x4_t mat4_perspective(float fov, float a, float near, float far);
 mat4x4_t mat4_lookat(vec3f_t eye, vec3f_t target, vec3f_t up);
+
+float radins(float degree);
+
 #endif 

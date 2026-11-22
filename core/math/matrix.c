@@ -1,5 +1,9 @@
 #include "matrix.h"
 
+float radins(float degree) {            
+  return degree * M_PI / 180;           
+}
+
 mat4x4_t mat4_create(float diagonal) {                                              
  return (mat4x4_t) {{                                                               
     {diagonal, 0, 0, 0},                                                            
@@ -80,8 +84,9 @@ mat4x4_t mat4_rotate(mat4x4_t m, float angle, vec3f_t v) {
 }                                                                                   
                                                                                     
 mat4x4_t mat4_perspective(float fov, float a, float near, float far) {              
-  float f = 1.0f / tanf(fov * (float)M_PI / 180.0f / 2.0f);                                                      
-                                                                                    
+  //float f = 1.0f / tanf(fov * (float)M_PI / 180.0f / 2.0f);                                                      
+  float f = 1.0f / tanf(fov / 2.0f);
+
   return (mat4x4_t) {{                                                              
     {f/a,   0, 0,                       0},                                         
     {0,     f, 0,                       0},                                         
