@@ -2,6 +2,7 @@
 
 #define MAX_MESH_VERTICES     1000
 
+
 vec3f_t convert_to_ndc(vec4f_t clip, int w, int h) {
   vec3f_t res;
   

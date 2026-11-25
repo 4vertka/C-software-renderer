@@ -19,6 +19,9 @@
 
 #include <time.h>
 
+#define TARGET_FRAME_MS       16
+
+
 vec3f_t p0 = {100, 100,0};            
 vec3f_t p1 = {100, 500, 0};           
 vec3f_t p2 = {500, 500, 0};           
@@ -109,6 +112,10 @@ int main()
     //object_draw(object, &fb, cam->view_mat);
 
     system_present(&sys);
+
+    Uint64 frame_ms = SDL_GetTicks() - delta_time.now;
+    if (frame_ms < TARGET_FRAME_MS) 
+      SDL_Delay(TARGET_FRAME_MS - frame_ms);
   }
   
   elip_free(elip);

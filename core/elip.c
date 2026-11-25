@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #define MAX_ELIP_VERTICES 1000
+#define NEAR_W            0.1f
 
 elip_t* elip_create(vec3f_t radii, int sector_count, int stack_count,
                     vec3f_t position, vec3f_t rotation, vec3f_t scale,                
@@ -16,6 +17,10 @@ elip_t* elip_create(vec3f_t radii, int sector_count, int stack_count,
   elip->stacks = stack_count;
 
   mesh_t* mesh = elip_mesh_create(sector_count, stack_count);
+  if (!mesh) {
+    free(elip);
+    return NULL;
+  }
   elip_mesh_build(mesh, sector_count, stack_count, radii);
   elip->mesh = mesh;
   
@@ -34,18 +39,30 @@ void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view, mat4x4_t proj) {
   mat4x4_t mv = mat4_mul_mat4(view, model);
   mat4x4_t mvp = mat4_mul_mat4(proj, mv);                                               
                                                                                            
-  vec3f_t* screen = malloc(elip->mesh->vec_count * sizeof(*screen));                             
+  vec3f_t* screen = malloc(elip->mesh->vec_count * sizeof(*screen));       
+  vec4f_t* clip = malloc(elip->mesh->vec_count * sizeof(*clip));
+  if (!screen || !clip) {
+    free(clip);
+    free(screen);
+    return;
+  }
+
   for (int i = 0; i < elip->mesh->vec_count; i++) {                                              
-    vec4f_t clip = build_mvp_position(mvp, elip->mesh->vertices[i].position);                             
-    screen[i] = convert_to_ndc(clip, fb->width, fb->height);                               
+    clip[i] = build_mvp_position(mvp, elip->mesh->vertices[i].position);        
+    if (clip[i].w > 0.0f) 
+      screen[i] = convert_to_ndc(clip[i], fb->width, fb->height);                       
   }                                                                                        
                                                                                            
   for (int i = 0; i < elip->mesh->face_count; i++) {      
     face_t f = elip->mesh->faces[i];
-    vec3f_t a = screen[f.a];                                                  
-    vec3f_t b = screen[f.b];                                                
-    vec3f_t c = screen[f.c];                                                
-                                                                                           
+    
+    if (clip[f.a].w < NEAR_W || clip[f.b].w < NEAR_W || clip[f.c].w < NEAR_W)
+      continue;
+   
+    vec3f_t a = screen[f.a];          
+    vec3f_t b = screen[f.b];          
+    vec3f_t c = screen[f.c];          
+
     float visibility = black_face_culling(a, b, c);                                        
     if (visibility < 0.0f) continue;                                                       
                                                                                            
@@ -58,7 +75,8 @@ void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view, mat4x4_t proj) {
         break;                                                                             
     }                                                                                      
   }                                                                                        
-                                                                                           
+                         
+  free(clip);
   free(screen);                                                                            
 }                                                                                          
 
@@ -98,12 +116,14 @@ void elip_mesh_build(mesh_t* mesh, float sectors, float stacks, vec3f_t radii) {
     stack_angle = M_PI / 2 - i * stack_step;                                                                
     xy = radii.x * cosf(stack_angle);                                                                 
     z = radii.z * sinf(stack_angle);                                                                  
-                                                                                                            
+               
+    float c = cosf(stack_angle);
+
     for (int j = 0; j <= sectors; ++j) {                                                              
       sector_angle = j * sector_step;                                                                       
                                                                                                             
-      x = xy * cosf(sector_angle);                                                                          
-      y = xy * sinf(sector_angle);                                                                          
+      x = radii.x * c * cosf(sector_angle);                                                                          
+      y = radii.y * c * sinf(sector_angle);                                                                          
       mesh->vertices[v].position.x = x;                                                                              
       mesh->vertices[v].position.y = y;                                                                              
       mesh->vertices[v].position.z = z;                                                                              
@@ -144,6 +164,9 @@ void elip_mesh_build(mesh_t* mesh, float sectors, float stacks, vec3f_t radii) {
                                                                                                             
     }                                                                                                       
   }                                                                                                         
+
+  mesh->face_count = idx;
+  mesh->liface_count = lidx;
 
 }
 
