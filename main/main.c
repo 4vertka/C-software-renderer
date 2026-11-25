@@ -17,14 +17,7 @@
 
 #include <elip.h>
 
-#include <time.h>
-
 #define TARGET_FRAME_MS       16
-
-
-vec3f_t p0 = {100, 100,0};            
-vec3f_t p1 = {100, 500, 0};           
-vec3f_t p2 = {500, 500, 0};           
 
 uint32_t color_to_uint(int r, int g, int b)
 {
@@ -48,36 +41,9 @@ int main()
 
   framebuffer_t fb = system_get_framebuffer(&sys);
 
-  vec3f_t vertices[] = {
-    {-0.5, -0.5,  0.5},                    
-    {0.5, -0.5,  0.5},                     
-    {0.5,  0.5,  0.5},
-    {-0.5,  0.5,  0.5},
-    {-0.5, -0.5, -0.5},
-    {0.5, -0.5, -0.5},
-    {0.5,  0.5, -0.5},
-    {-0.5,  0.5, -0.5}
-  };
-
-  uint16_t indices[] = {       
-    0, 1, 2,  2, 3, 0,
-    1, 5, 6,  6, 2, 1,
-    5, 4, 7,  7, 6, 5,
-    4, 0, 3,  3, 7, 4,
-    3, 2, 6,  6, 7, 3,
-    4, 5, 1,  1, 0, 4
-  };                            
-
   camera_t* cam = camera_create(radins(45.0f), (float)fb.width/fb.height, 0.1f, 100.0f, (vec3f_t){0,0,-3}, (vec3f_t){0,0,0});
 
-  //mesh_t* mesh = mesh_create(vertices, sizeof(vertices)/sizeof(vec3f_t), indices, sizeof(indices)/sizeof(uint16_t));
-  //transform_t transform = transform_create((vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1});
-  //object_t* object = object_create(mesh, transform, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
-
   elip_t* elip = elip_create((vec3f_t){1.0f,1.0f,1.0f}, 36, 18, (vec3f_t){0,0,0}, (vec3f_t){1,0,0}, (vec3f_t){1,1,1}, color_to_uint(255, 255, 255), RENDER_WIREFRAME);
-
-  float angle = 0.0;
-  float camera_angle = 0.0;
 
   dt_t delta_time = {                 
     .last = SDL_GetTicks(),           
@@ -94,22 +60,7 @@ int main()
     system_poll(&sys, &in);
     camera_update(cam, &in, delta_time.dt);
 
-    //const float radius = 10.0f;
-    //camera_angle += dt * 0.5f;
-
-    //float camX = sinf(camera_angle) * radius;
-    //float camZ = cosf(camera_angle) * radius;
-
-    //cam->view_mat = mat4_lookat((vec3f_t){camX, 0.0, camZ}, (vec3f_t){0,0,0}, (vec3f_t){0.0, 1.0f, 0.0});
-
-    //angle += delta_time.dt * 5.0f;
-    //elip->transform.rotation.y = angle;
-    //object->transform.rotation.y = angle;
-    //object->transform.rotation.x = angle;
-    
     elip_draw(elip, &fb, cam->view_mat, cam->projection_mat);
-
-    //object_draw(object, &fb, cam->view_mat);
 
     system_present(&sys);
 
