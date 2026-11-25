@@ -36,14 +36,15 @@ void elip_draw(elip_t* elip, framebuffer_t* fb, mat4x4_t view, mat4x4_t proj) {
                                                                                            
   vec3f_t* screen = malloc(elip->mesh->vec_count * sizeof(*screen));                             
   for (int i = 0; i < elip->mesh->vec_count; i++) {                                              
-    vec4f_t clip = build_mvp_position(mvp, elip->mesh->vertices[i]);                             
+    vec4f_t clip = build_mvp_position(mvp, elip->mesh->vertices[i].position);                             
     screen[i] = convert_to_ndc(clip, fb->width, fb->height);                               
   }                                                                                        
                                                                                            
-  for (int i = 0; i + 2 < elip->mesh->ind_count; i+=3) {                                         
-    vec3f_t a = screen[elip->mesh->indices[i]];                                                  
-    vec3f_t b = screen[elip->mesh->indices[i+1]];                                                
-    vec3f_t c = screen[elip->mesh->indices[i+2]];                                                
+  for (int i = 0; i < elip->mesh->face_count; i++) {      
+    face_t f = elip->mesh->faces[i];
+    vec3f_t a = screen[f.a];                                                  
+    vec3f_t b = screen[f.b];                                                
+    vec3f_t c = screen[f.c];                                                
                                                                                            
     float visibility = black_face_culling(a, b, c);                                        
     if (visibility < 0.0f) continue;                                                       
@@ -65,14 +66,14 @@ mesh_t* elip_mesh_create(float sector_count, float stack_count) {
   mesh_t* mesh = malloc(sizeof(*mesh));
 
   mesh->vec_count = (stack_count + 1) * (sector_count + 1);                            
-  mesh->ind_count = stack_count * sector_count * 6;                                    
-  mesh->li_count = stack_count * sector_count * 4;                                     
+  mesh->face_count = stack_count * sector_count * 6;                                    
+  mesh->liface_count = stack_count * sector_count * 4;                                     
                                                                                    
   mesh->vertices = malloc(mesh->vec_count * sizeof(*mesh->vertices));                  
-  mesh->indices = malloc(mesh->ind_count * sizeof(*mesh->indices));                    
-  mesh->line_indices = malloc(mesh->li_count * sizeof(*mesh->line_indices));           
+  mesh->faces = malloc(mesh->face_count * sizeof(*mesh->faces));                    
+  mesh->line_faces = malloc(mesh->liface_count * sizeof(*mesh->line_faces));           
                                                                                        
-  if (!mesh->vertices || !mesh->indices || !mesh->line_indices) {                      
+  if (!mesh->vertices || !mesh->faces || !mesh->line_faces) {                      
     mesh_free(mesh);
     return NULL;                                                                       
   }                                                                                    
@@ -83,8 +84,8 @@ mesh_t* elip_mesh_create(float sector_count, float stack_count) {
 void elip_mesh_build(mesh_t* mesh, float sectors, float stacks, vec3f_t radii) {
 
   memset(mesh->vertices, 0, mesh->vec_count * sizeof(*mesh->vertices));          
-  memset(mesh->indices, 0, mesh->ind_count * sizeof(*mesh->indices));            
-  memset(mesh->line_indices, 0, mesh->li_count * sizeof(*mesh->line_indices));   
+  memset(mesh->faces, 0, mesh->face_count * sizeof(*mesh->faces));            
+  memset(mesh->line_faces, 0, mesh->liface_count * sizeof(*mesh->line_faces));   
 
   int v = 0;                                                                                                
   float x, y, z, xy;                                                                                        
@@ -103,9 +104,9 @@ void elip_mesh_build(mesh_t* mesh, float sectors, float stacks, vec3f_t radii) {
                                                                                                             
       x = xy * cosf(sector_angle);                                                                          
       y = xy * sinf(sector_angle);                                                                          
-      mesh->vertices[v].x = x;                                                                              
-      mesh->vertices[v].y = y;                                                                              
-      mesh->vertices[v].z = z;                                                                              
+      mesh->vertices[v].position.x = x;                                                                              
+      mesh->vertices[v].position.y = y;                                                                              
+      mesh->vertices[v].position.z = z;                                                                              
                                                                                                             
       v++;                                                                                                  
     }                                                                                                       
@@ -120,21 +121,25 @@ void elip_mesh_build(mesh_t* mesh, float sectors, float stacks, vec3f_t radii) {
                                                                                                             
     for (int j = 0; j < sectors; ++j, ++k1, ++k2) {                                                   
       if (i != 0) {                                                                                         
-        mesh->indices[idx++] = k1;                                                                          
-        mesh->indices[idx++] = k2;                                                                          
-        mesh->indices[idx++] = k1+1;                                                                        
+        mesh->faces[idx].a = k1;                                                                          
+        mesh->faces[idx].b = k2;                                                                          
+        mesh->faces[idx].c = k1+1;      
+        idx++;
       }                                                                                                     
       if (i != (stacks-1)) {                                                                          
-        mesh->indices[idx++] = k1+1;                                                                        
-        mesh->indices[idx++] = k2;                                                                          
-        mesh->indices[idx++] = k2+1;                                                                        
+        mesh->faces[idx].a = k1+1;                                                                        
+        mesh->faces[idx].b = k2;                                                                          
+        mesh->faces[idx].c = k2+1; 
+        idx++;
       }                                                                                                     
                                                                                                             
-      mesh->line_indices[lidx++] = k1;                                                                      
-      mesh->line_indices[lidx++] = k2;                                                                      
+      mesh->line_faces[lidx].a = k1;                                                                      
+      mesh->line_faces[lidx].b = k2;       
+      lidx++;
       if (i != 0) {                                                                                         
-        mesh->line_indices[lidx++] = k1;                                                                    
-        mesh->line_indices[lidx++] = k1 + 1;                                                                
+        mesh->line_faces[lidx].a = k1;                                                                    
+        mesh->line_faces[lidx].b = k1 + 1;      
+        lidx++;
       }                                                                                                     
                                                                                                             
     }                                                                                                       

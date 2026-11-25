@@ -68,14 +68,16 @@ void object_draw(const object_t* object, framebuffer_t* fb, mat4x4_t view) {
 
   vec3f_t screen[MAX_MESH_VERTICES];
   for (int i = 0; i < mesh->vec_count; i++) {
-    vec4f_t clip = build_mvp_position(mvp, mesh->vertices[i]);
+    vec4f_t clip = build_mvp_position(mvp, mesh->vertices[i].position);
     screen[i] = convert_to_ndc(clip, fb->width, fb->height);
   }
   
-  for (int i = 0; i + 2 < mesh->ind_count; i+=3) {
-    vec3f_t a = screen[mesh->indices[i]];
-    vec3f_t b = screen[mesh->indices[i+1]];
-    vec3f_t c = screen[mesh->indices[i+2]];
+  for (int i = 0; i < mesh->face_count; i++) {
+    face_t f = mesh->faces[i];
+
+    vec3f_t a = screen[f.a];
+    vec3f_t b = screen[f.b];
+    vec3f_t c = screen[f.c];
     
     float visibility = black_face_culling(a, b, c);
     if (visibility < 0.0f) continue;

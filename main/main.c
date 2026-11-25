@@ -99,8 +99,8 @@ int main()
 
     //cam->view_mat = mat4_lookat((vec3f_t){camX, 0.0, camZ}, (vec3f_t){0,0,0}, (vec3f_t){0.0, 1.0f, 0.0});
 
-    angle += delta_time.dt * 5.0f;
-    elip->transform.rotation.y = angle;
+    //angle += delta_time.dt * 5.0f;
+    //elip->transform.rotation.y = angle;
     //object->transform.rotation.y = angle;
     //object->transform.rotation.x = angle;
     
